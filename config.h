@@ -165,7 +165,11 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,		XK_q,          spawn,                  {.v = (const char*[]){ "sysact", NULL } } },
 	{ MODKEY,			XK_w,          spawn,                  {.v = (const char*[]){ BROWSER, NULL } } },
 	{ MODKEY|ShiftMask,		XK_w,          spawn,                  {.v = (const char*[]){ TERMINAL, "-e", "sudo", "nmtui", NULL } } },
-	{ MODKEY,			XK_e,          spawn,                  SHCMD(TERMINAL " -e neomutt ; pkill -RTMIN+12 dwmblocks; rmdir ~/.abook 2>/dev/null") },
+    { MODKEY,                       XK_e,          spawn,                  SHCMD(TERMINAL " -e neomutt ; pkill -RTMIN+12 dwmblocks") },
+    { MODKEY|ShiftMask,             XK_o,          spawn,                  SHCMD("/var/lib/flatpak/exports/bin/io.github.mahmoudbahaa.outlook_for_linux") },
+    { MODKEY|ShiftMask,             XK_t,          spawn,                  SHCMD("/var/lib/flatpak/exports/bin/com.github.IsmaelMartinez.teams_for_linux") },
+
+    { MODKEY|ShiftMask,             XK_d,          spawn,                  SHCMD("env _JAVA_AWT_WM_NONREPARENTING=1 /opt/DataGrip-2020.2.3/bin/datagrip.sh") },
 	{ MODKEY|ShiftMask,		XK_e,          spawn,                  SHCMD(TERMINAL " -e abook -C ~/.config/abook/abookrc --datafile ~/.config/abook/addressbook") },
 	{ MODKEY,			XK_r,          spawn,                  {.v = (const char*[]){ TERMINAL, "-e", "lfub", NULL } } },
 	{ MODKEY|ShiftMask,		XK_r,          spawn,                  {.v = (const char*[]){ TERMINAL, "-e", "htop", NULL } } },

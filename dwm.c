@@ -1654,22 +1654,25 @@ scan(void)
 	}
 }
 
+
 void
-sendmon(Client *c, Monitor *m)
-{
-	if (c->mon == m)
-		return;
-	unfocus(c, 1);
-	detach(c);
-	detachstack(c);
-	c->mon = m;
-	c->tags = m->tagset[m->seltags]; /* assign tags of target monitor */
-	attach(c);
-	attachstack(c);
-	setclienttagprop(c);
-	focus(NULL);
-	arrange(NULL);
+sendmon(Client *c, Monitor *m) {
+    if (c->mon == m)
+        return;
+    unfocus(c, 1);
+    detach(c);
+    detachstack(c);
+    c->mon = m;
+    c->tags = m->tagset[m->seltags]; /* assign tags of target monitor */
+    attach(c);
+    attachstack(c);
+    focus(c);  // Ensure focus remains on the moved window
+    arrange(m);  // Rearrange the target monitor
+    arrange(c->mon);  // Rearrange the current monitor as well
 }
+
+
+
 
 void
 setclientstate(Client *c, long state)
