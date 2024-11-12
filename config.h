@@ -166,6 +166,7 @@ static const Key keys[] = {
 	{ MODKEY,			XK_w,          spawn,                  {.v = (const char*[]){ BROWSER, NULL } } },
 	{ MODKEY|ShiftMask,		XK_w,          spawn,                  {.v = (const char*[]){ TERMINAL, "-e", "sudo", "nmtui", NULL } } },
     { MODKEY,                       XK_e,          spawn,                  SHCMD(TERMINAL " -e neomutt ; pkill -RTMIN+12 dwmblocks") },
+    { MODKEY|ControlMask|ShiftMask, XK_r, spawn, SHCMD("/usr/bin/remmina") },
     { MODKEY|ShiftMask,             XK_o,          spawn,                  SHCMD("/var/lib/flatpak/exports/bin/io.github.mahmoudbahaa.outlook_for_linux") },
     { MODKEY|ShiftMask,             XK_t,          spawn,                  SHCMD("/var/lib/flatpak/exports/bin/com.github.IsmaelMartinez.teams_for_linux") },
 
