@@ -166,6 +166,7 @@ static const Key keys[] = {
 	{ MODKEY,			XK_w,          spawn,                  {.v = (const char*[]){ BROWSER, NULL } } },
 	{ MODKEY|ShiftMask,		XK_w,          spawn,                  {.v = (const char*[]){ TERMINAL, "-e", "sudo", "nmtui", NULL } } },
     { MODKEY,                       XK_e,          spawn,                  SHCMD(TERMINAL " -e neomutt ; pkill -RTMIN+12 dwmblocks") },
+    { MODKEY|ShiftMask,             XK_e,          spawn,                  SHCMD("nemo") },
     { MODKEY|ControlMask|ShiftMask, XK_r, spawn, SHCMD("/usr/bin/remmina") },
     { MODKEY|ShiftMask,             XK_o,          spawn,                  SHCMD("/var/lib/flatpak/exports/bin/io.github.mahmoudbahaa.outlook_for_linux") },
     { MODKEY|ShiftMask,             XK_t,          spawn,                  SHCMD("/var/lib/flatpak/exports/bin/com.github.IsmaelMartinez.teams_for_linux") },
@@ -212,7 +213,9 @@ static const Key keys[] = {
 	/* { MODKEY|ShiftMask,		XK_apostrophe, spawn,                  SHCMD("") }, */
 	{ MODKEY|ShiftMask,		XK_apostrophe, togglesmartgaps,        {0} },
 	{ MODKEY,			XK_Return,     spawn,                  {.v = termcmd } },
-	{ MODKEY|ShiftMask,		XK_Return,     togglescratch,          {.ui = 0} },
+    { MODKEY,                       XK_KP_Enter,   spawn,                  {.v = termcmd } },
+
+	/* { MODKEY|ShiftMask,		XK_Return,     togglescratch,          {.ui = 0} }, */
 
 	{ MODKEY,			XK_z,          incrgaps,               {.i = +3 } },
 	/* { MODKEY|ShiftMask,		XK_z,          spawn,                  SHCMD("") }, */

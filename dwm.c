@@ -1991,13 +1991,30 @@ tag(const Arg *arg)
 void
 tagmon(const Arg *arg)
 {
+    Client *c;
+
     if (!selmon->sel || !mons->next)
         return;
-    sendmon(selmon->sel, dirtomon(arg->i));
-    focus(NULL);
-    arrange(NULL); // Forces layout recalculation on the current monitor
-}
 
+    // Track the selected client before moving it
+    c = selmon->sel;
+
+    // Unfocus the window on the original monitor
+    unfocus(c, 1);
+
+    // Move the window to the new monitor
+    sendmon(c, dirtomon(arg->i));
+
+    // Update selmon to the new monitor and re-focus the moved window
+    selmon = c->mon;
+    focus(c);          // Focus on the moved window
+
+    // Move the mouse cursor to the center of the focused window
+    XWarpPointer(dpy, None, c->win, 0, 0, 0, 0, c->w / 2, c->h / 2);
+
+    // Arrange the layout to remove any gaps left behind
+    arrange(NULL);
+}
 
 
 
