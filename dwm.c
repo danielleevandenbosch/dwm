@@ -1987,13 +1987,19 @@ tag(const Arg *arg)
 	}
 }
 
+
 void
 tagmon(const Arg *arg)
 {
-	if (!selmon->sel || !mons->next)
-		return;
-	sendmon(selmon->sel, dirtomon(arg->i));
+    if (!selmon->sel || !mons->next)
+        return;
+    sendmon(selmon->sel, dirtomon(arg->i));
+    focus(NULL);
+    arrange(NULL); // Forces layout recalculation on the current monitor
 }
+
+
+
 
 void
 togglebar(const Arg *arg)
