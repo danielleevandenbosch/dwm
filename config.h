@@ -312,6 +312,11 @@ static const Key keys[] = {
 	/* { MODKEY|Mod4Mask,           XK_o,          incrohgaps,             {.i = -1 } }, */
 	/* { MODKEY|ShiftMask,          XK_y,          incrovgaps,             {.i = +1 } }, */
 	/* { MODKEY|ShiftMask,          XK_o,          incrovgaps,             {.i = -1 } }, */
+    { MODKEY|ControlMask|ShiftMask,   XK_h,  spawn,   SHCMD("xdotool click 6") }, // Scroll left
+    { MODKEY|ControlMask|ShiftMask,   XK_j,  spawn,   SHCMD("xdotool click 5") }, // Scroll down
+    { MODKEY|ControlMask|ShiftMask,   XK_k,  spawn,   SHCMD("xdotool click 4") }, // Scroll up
+    { MODKEY|ControlMask|ShiftMask,   XK_l,  spawn,   SHCMD("xdotool click 7") }, // Scroll right
+
 
 };
 
