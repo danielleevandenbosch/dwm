@@ -312,10 +312,11 @@ static const Key keys[] = {
 	/* { MODKEY|Mod4Mask,           XK_o,          incrohgaps,             {.i = -1 } }, */
 	/* { MODKEY|ShiftMask,          XK_y,          incrovgaps,             {.i = +1 } }, */
 	/* { MODKEY|ShiftMask,          XK_o,          incrovgaps,             {.i = -1 } }, */
-{ MODKEY|ShiftMask,   XK_h,  spawn,   SHCMD("[ $(xdotool getwindowfocus getwindowclassname) = 'Brave-browser' ] && xdotool click 6") }, // Scroll left
-{ MODKEY|ShiftMask,   XK_j,  spawn,   SHCMD("[ $(xdotool getwindowfocus getwindowclassname) = 'Brave-browser' ] && xdotool click 5") }, // Scroll down
-{ MODKEY|ShiftMask,   XK_k,  spawn,   SHCMD("[ $(xdotool getwindowfocus getwindowclassname) = 'Brave-browser' ] && xdotool click 4") }, // Scroll up
-{ MODKEY|ShiftMask,   XK_l,  spawn,   SHCMD("[ $(xdotool getwindowfocus getwindowclassname) = 'Brave-browser' ] && xdotool click 7") }, // Scroll right
+{ 0, XF86XK_AudioStop,      spawn, SHCMD("xdotool click 6") }, // Scroll left
+{ 0, XF86XK_AudioPrev,      spawn, SHCMD("xdotool click 5") }, // Scroll down
+{ 0, XF86XK_AudioPlay,      spawn, SHCMD("xdotool click 4") }, // Scroll up
+{ 0, XF86XK_AudioNext,      spawn, SHCMD("xdotool click 7") }, // Scroll right
+
 
 
 };
