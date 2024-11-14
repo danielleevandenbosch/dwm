@@ -2706,3 +2706,246 @@ main(int argc, char *argv[])
 	XCloseDisplay(dpy);
 	return EXIT_SUCCESS;
 }
+/* Function to cycle focus to the next client or monitor, ensuring no monitor is left unchecked */
+/*
+void focusnext(const Arg *arg) {
+    Monitor *m = selmon;               // Start with the currently selected monitor
+    Client *c = selmon->sel ? selmon->sel->next : NULL; // Start with the next client if selected, or NULL
+    int cycled = 0;                    // Track if we've cycled through all monitors
+
+    while (1) {
+        if (c) {                       // If there's a client, focus it
+            focus(c);
+            return;
+        }
+        
+        // Move to the next monitor in the list, wrapping around if needed
+        m = m->next ? m->next : mons;
+        if (m == selmon) {             // If we've looped back to the start, track that
+            if (cycled++) break;       // If already cycled, break out to prevent an infinite loop
+        }
+        
+        // Check if the new monitor has clients, otherwise focus the empty monitor
+        if (m->clients) {
+            c = m->clients;            // Focus the first client on the new monitor
+        } else {
+            unfocus(selmon->sel, 0);   // Unfocus the current selection
+            selmon = m;                // Set the new monitor
+            focus(NULL);               // Focus the empty monitor
+            return;
+        }
+    }
+}
+// this one mostly works, but it doesn't focus the last client on the monitor
+*/
+
+/*
+    the following function is a modified version of the focusnext function
+void focusnext(const Arg *arg) {
+    Monitor *m = selmon;                        // Start with the currently selected monitor
+    Client *c = selmon->sel ? selmon->sel->next : NULL;  // Start with the next client if there's a selection, or NULL
+    int cycled = 0;                             // Track if we've cycled through all monitors
+
+    while (1) {
+        if (c) {                                // If there's a client, focus it
+            focus(c);
+            return;
+        }
+
+        // Move to the next monitor in the list, wrapping around if needed
+        m = m->next ? m->next : mons;
+        if (m == selmon) {                      // If we've looped back to the start, track that
+            if (cycled++) break;                // If already cycled, break out to prevent an infinite loop
+        }
+
+        // Check if the new monitor has clients, otherwise focus the empty monitor
+        if (m->clients) {
+            // Traverse to the last client on this monitor if we reached the end
+            for (c = m->clients; c->next; c = c->next);
+            focus(c);                           // Focus the last client on the new monitor
+            return;
+        } else {
+            unfocus(selmon->sel, 0);            // Unfocus the current selection
+            selmon = m;                         // Set the new monitor
+            focus(NULL);                        // Focus the empty monitor
+            return;
+        }
+    }
+}
+
+*/
+// Helper function to count total monitors
+int count_monitors() {
+    Monitor *m;
+    int count = 0;
+    for (m = mons; m; m = m->next) {
+        count++;
+    }
+    return count;
+}
+
+// Helper function to get a monitor by index
+Monitor *get_monitor_by_index(int index) {
+    Monitor *m = mons;
+    int count = 0;
+    while (m && count < index) {
+        m = m->next;
+        count++;
+    }
+    return m;  // Returns NULL if index is out of bounds
+}
+
+// Main function to focus on the next window or monitor
+/*
+// best so far
+void focusnext(const Arg *arg) {
+    int total_monitors = count_monitors();
+    Monitor *current_monitor = selmon;
+    Client *current_client = selmon->sel ? selmon->sel->next : NULL;
+
+    int monitor_index = 0;
+    for (Monitor *m = mons; m; m = m->next) {
+        if (m == selmon) break;
+        monitor_index++;
+    }
+
+    int cycled = 0;  // Prevent infinite loop
+
+    while (1) {
+        // If there’s a client in the current monitor, focus it
+        if (current_client) {
+            unfocus(selmon->sel, 0);   // Unfocus the current selection
+            selmon = current_monitor;  // Update to the current monitor
+            focus(current_client);     // Focus the next client
+            return;
+        }
+
+        // Move to the next monitor by incrementing index and wrapping around
+        monitor_index = (monitor_index + 1) % total_monitors;
+        current_monitor = get_monitor_by_index(monitor_index);
+
+        // Prevent infinite looping if we've cycled through all monitors
+        if (current_monitor == selmon && cycled++) {
+            // If all monitors are empty, keep focus on the current monitor
+            unfocus(selmon->sel, 0);
+            focus(NULL);
+            return;
+        }
+
+        selmon = current_monitor;  // Update selected monitor
+        current_client = selmon->clients;  // Set to the first client of the new monitor
+
+        // If there are no clients on this monitor, focus the empty monitor
+        if (!selmon->clients) {
+            unfocus(selmon->sel, 0);  // Unfocus the previous monitor
+            focus(NULL);              // Focus on the monitor itself
+            return;
+        }
+    }
+}
+*/
+
+// Main function to focus on the next window or monitor
+void focusnext(const Arg *arg) {
+    int total_monitors = count_monitors();
+    Monitor *current_monitor = selmon;
+    Client *current_client = selmon->sel ? selmon->sel->next : NULL;
+
+    int monitor_index = 0;
+    for (Monitor *m = mons; m; m = m->next) {
+        if (m == selmon) break;
+        monitor_index++;
+    }
+
+    int cycled = 0;  // Prevent infinite loop
+
+    while (1) {
+        if (current_client) {
+            // Unfocus the current client before switching to the new focus
+            unfocus(selmon->sel, 0);      // Clear focus from the previous client
+            selmon = current_monitor;     // Update to the new monitor
+            focus(current_client);        // Focus the next client
+            return;
+        }
+
+        // Move to the next monitor by incrementing index and wrapping around
+        monitor_index = (monitor_index + 1) % total_monitors;
+        current_monitor = get_monitor_by_index(monitor_index);
+
+        // Prevent infinite looping if we've cycled through all monitors
+        if (current_monitor == selmon && cycled++) {
+            // If all monitors are empty, keep focus on the current monitor
+            unfocus(selmon->sel, 0);
+            focus(NULL);
+            return;
+        }
+
+        // Unfocus the current client, set the new monitor, and check if it has clients
+        unfocus(selmon->sel, 0);         // Unfocus the previous selection
+        selmon = current_monitor;        // Set the new selected monitor
+        current_client = selmon->clients;  // Get the first client of the new monitor
+
+        // If there are no clients on this monitor, focus the monitor itself
+        if (!selmon->clients) {
+            focus(NULL);                 // Focus on the empty monitor
+            return;
+        }
+    }
+}
+
+
+
+// Helper function to get the last client on a monitor
+Client *get_last_client(Monitor *m) {
+    Client *c = m->clients;
+    if (!c) return NULL;
+    while (c->next) {
+        c = c->next;
+    }
+    return c;
+}
+
+// Main function to focus on the previous window, cycling through monitors in reverse
+//
+//
+// Main function to focus on the previous window or monitor
+void focusprev(const Arg *arg) {
+    Monitor *m = selmon;
+    Client *c = selmon->sel;  // Start with the currently selected client
+    Client *prev = NULL;      // To track the previous client in the loop
+
+    // Track the monitor index
+    int monitor_index = 0;
+    int total_monitors = count_monitors();
+    for (Monitor *temp = mons; temp; temp = temp->next) {
+        if (temp == selmon) break;
+        monitor_index++;
+    }
+
+    // Loop to find the previous client within the monitor
+    for (Client *cur = m->clients; cur; cur = cur->next) {
+        if (cur == c) break;  // Stop when reaching the currently focused client
+        prev = cur;           // Update prev to the last client before the current one
+    }
+
+    // If there's a previous client, focus it
+    if (prev) {
+        focus(prev);
+        return;
+    }
+
+    // If no previous client, move to the previous monitor in the list
+    monitor_index = (monitor_index - 1 + total_monitors) % total_monitors;
+    Monitor *prev_monitor = get_monitor_by_index(monitor_index);
+    
+    // Update the selected monitor
+    selmon = prev_monitor;
+
+    // Focus the last client in the previous monitor, or the monitor itself if empty
+    if (selmon->clients) {
+        Client *last_client = get_last_client(selmon);
+        focus(last_client);
+    } else {
+        focus(NULL);  // Focus the empty monitor if no clients
+    }
+}

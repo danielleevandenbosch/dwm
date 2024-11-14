@@ -134,6 +134,20 @@ ResourcePref resources[] = {
 #include <X11/XF86keysym.h>
 #include "shiftview.c"
 
+void focusnext(const Arg *arg);
+void focusprev(const Arg *arg);
+
+
+void cyclefocus(const Arg *arg) {
+    if (arg->i == 1)
+        focusnext(arg);  // Cycle to the next window
+    else
+        focusprev(arg);  // Cycle to the previous window
+}
+
+
+
+
 static const Key keys[] = {
 	/* modifier                     key            function                argument */
 	STACKKEYS(MODKEY,                              focus)
@@ -235,9 +249,17 @@ static const Key keys[] = {
 	{ MODKEY,			XK_period,     spawn,                  {.v = (const char*[]){ "mpc", "next", NULL } } },
 	{ MODKEY|ShiftMask,		XK_period,     spawn,                  {.v = (const char*[]){ "mpc", "repeat", NULL } } },
 
-	{ MODKEY,			XK_Left,       focusmon,               {.i = -1 } },
+/*	{ MODKEY,			XK_Left,       focusmon,               {.i = -1 } },    */
 	{ MODKEY|ShiftMask,		XK_Left,       tagmon,                 {.i = -1 } },
-	{ MODKEY,			XK_Right,      focusmon,               {.i = +1 } },
+/*	{ MODKEY,			XK_Right,      focusmon,               {.i = +1 } },    */
+
+    /* Focus next window across all workspaces */
+    { MODKEY,                       XK_Right,      focusnext,               {0} },
+
+    /* Focus previous window across all workspaces */
+    { MODKEY,                       XK_Left,       focusprev,               {0} },
+
+
 	{ MODKEY|ShiftMask,		XK_Right,      tagmon,                 {.i = +1 } },
 
 	{ MODKEY,			XK_Page_Up,    shiftview,              { .i = -1 } },
