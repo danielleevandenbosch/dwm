@@ -66,12 +66,14 @@ static int resizehints = 0;    /* 1 means respect size hints in tiled resizals *
 static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen window */
 #define FORCE_VSPLIT 1  /* nrowgrid layout: force two clients to always split vertically */
 #include "vanitygaps.c"
+#include "gaplessgrid.c"
+#include "gappedgrid.c"
 static const Layout layouts[] = {
 	/* symbol     arrange function */
 	{ "[]=",	tile },	                /* Default: Master on left, slaves on right */
 	{ "TTT",	bstack },               /* Master on top, slaves on bottom */
 
-	{ "[@]",	spiral },               /* Fibonacci spiral */
+{ "[@]",	spiral },               /* Fibonacci spiral */
 	{ "[\\]",	dwindle },              /* Decreasing in size right and leftward */
 
 	{ "[D]",	deck },	                /* Master on left, slaves in monocle-like mode on right */
@@ -79,7 +81,8 @@ static const Layout layouts[] = {
 
 	{ "|M|",	centeredmaster },               /* Master in middle, slaves on sides */
 	{ ">M>",	centeredfloatingmaster },       /* Same but master floats */
-
+    { "HHH",      gaplessgrid },  /* Gapless Grid layout */
+    { "GGG",      gappedgrid },            /* Grid layout with gaps */
 	{ "><>",	NULL },	                /* no layout function means floating behavior */
 	{ NULL,		NULL },
 };
@@ -131,6 +134,7 @@ ResourcePref resources[] = {
 		{ "smartgaps",		INTEGER, &smartgaps },
 };
 
+
 #include <X11/XF86keysym.h>
 #include "shiftview.c"
 
@@ -172,8 +176,10 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,		XK_equal,      spawn,                  SHCMD("wpctl set-volume @DEFAULT_AUDIO_SINK@ 15%+; kill -44 $(pidof dwmblocks)") },
 	{ MODKEY,			XK_BackSpace,  spawn,                  {.v = (const char*[]){ "sysact", NULL } } },
 	{ MODKEY|ShiftMask,		XK_BackSpace,  spawn,                  {.v = (const char*[]){ "sysact", NULL } } },
-
-	{ MODKEY,			XK_Tab,        view,                   {0} },
+    { MODKEY|ShiftMask,              XK_b,          setlayout,      {.v = &layouts[8]} }, /* this is the brady bunch layout */
+    { MODKEY,                        XK_b,          setlayout,      {.v = &layouts[9]} }, /* this is the brady bunch layout */
+	
+    { MODKEY,			XK_Tab,        view,                   {0} },
 	/* { MODKEY|ShiftMask,		XK_Tab,	       spawn,                  SHCMD("") }, */
 	{ MODKEY,			XK_q,          killclient,             {0} },
 	{ MODKEY|ShiftMask,		XK_q,          spawn,                  {.v = (const char*[]){ "sysact", NULL } } },
@@ -238,8 +244,8 @@ static const Key keys[] = {
 	{ MODKEY,			XK_c,          spawn,                  {.v = (const char*[]){ TERMINAL, "-e", "profanity", NULL } } },
 	/* { MODKEY|ShiftMask,		XK_c,          spawn,                  SHCMD("") }, */
 	/* V is automatically bound above in STACKKEYS */
-	{ MODKEY,			XK_b,          togglebar,              {0} },
 	/* { MODKEY|ShiftMask,		XK_b,          spawn,                  SHCMD("") }, */
+    { MODKEY|ControlMask|ShiftMask, XK_b,          togglebar,              {0} },
 	{ MODKEY,			XK_n,          spawn,                  {.v = (const char*[]){ TERMINAL, "-e", "nvim", "-c", "VimwikiIndex", NULL } } },
 	{ MODKEY|ShiftMask,		XK_n,          spawn,                  SHCMD(TERMINAL " -e newsboat ; pkill -RTMIN+6 dwmblocks") },
 	{ MODKEY,			XK_m,          spawn,                  {.v = (const char*[]){ TERMINAL, "-e", "ncmpcpp", NULL } } },
